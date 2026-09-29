@@ -1,7 +1,7 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 chcp 65001 >nul
-title Soul of Waifu v2.4.7 Installer
+title Soul of Waifu v2.5.2 Installer
 color 0A
 
 cd /d "%~dp0"

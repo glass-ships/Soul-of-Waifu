@@ -47,7 +47,7 @@ setuptools = "*"
 sox = "*"
 
 [tool.pixi.pypi-dependencies]
-aiohttp = "==3.11.13"
+aiohttp = ">=3.14.3"
 "antlr4-python3-runtime" = "==4.9.3"
 av = "*"
 beautifulsoup4 = "*"

@@ -38,7 +38,7 @@
 ---
 
 <p align="center">
-  <img style="width:95%; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.6);" alt="Soul of Waifu v2.4.7 Interface" src="assets/readme/preview.gif">
+  <img style="width:95%; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.6);" alt="Soul of Waifu v2.5.1 Interface" src="assets/readme/preview.gif">
 </p>
 
 ---
@@ -268,7 +268,7 @@ Generate illustrations directly within chat messages via context menu actions.
 
 No Python knowledge, Node.js, or command-line experience required.
 
-1. Download the latest release archive (currently `Soul-of-Waifu-v2.4.7.rar`) from [Releases](https://github.com/jofizcd/Soul-of-Waifu/releases).
+1. Download the latest release archive (currently `Soul-of-Waifu-v2.5.1.rar`) from [Releases](https://github.com/jofizcd/Soul-of-Waifu/releases).
 2. Extract it with 7-Zip or WinRAR to a path without spaces or Cyrillic characters (e.g. `C:\AI\Soul-Of-Waifu`).
 3. Windows: Run `installer.bat` (Do NOT run as Administrator).
    Linux: Run `installer.sh` (Do NOT run as sudo)

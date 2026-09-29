@@ -3962,7 +3962,7 @@ class AboutDialog(QtWidgets.QDialog):
 
         lp.addStretch()
 
-        ver_bottom = QtWidgets.QLabel("v2.4.7")
+        ver_bottom = QtWidgets.QLabel("v2.5.2")
         ver_bottom.setAlignment(Qt.AlignmentFlag.AlignCenter)
         ver_bottom.setStyleSheet(
             "font-size: 8.5pt; color: rgba(255,255,255,0.17);"
@@ -3984,7 +3984,7 @@ class AboutDialog(QtWidgets.QDialog):
         title_lbl = QtWidgets.QLabel("Soul of Waifu")
         title_lbl.setObjectName("title_label")
 
-        version_badge = QtWidgets.QLabel("v2.4.7")
+        version_badge = QtWidgets.QLabel("v2.5.2")
         version_badge.setObjectName("version_badge")
         version_badge.setAlignment(Qt.AlignmentFlag.AlignCenter)
         version_badge.setFixedHeight(22)

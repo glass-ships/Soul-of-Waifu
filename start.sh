@@ -3,7 +3,7 @@ DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd "$DIR" || exit 1
 
 echo "============================================="
-echo " Soul of Waifu v2.4.5 - Starting Application"
+echo " Soul of Waifu v2.5.2 - Starting Application"
 echo "============================================="
 echo
 
