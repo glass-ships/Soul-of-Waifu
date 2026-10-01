@@ -1,14 +1,16 @@
-import os
-import json
-import shutil
-import zipfile
-import tarfile
-import platform
 import asyncio
-import aiohttp
+import json
 import logging
+import os
+import platform
+import re
+import shutil
+import tarfile
+import zipfile
 from pathlib import Path
-from PyQt6 import QtCore, QtGui, QtWidgets
+
+import aiohttp
+from PyQt6 import QtCore
 
 logger = logging.getLogger("LlamaUpdater")
 
@@ -22,16 +24,23 @@ class LlamaUpdater(QtCore.QObject):
         self.cache_dir = backend_dir / "_update_cache"
         self.backup_dir = backend_dir / "_backup"
         self.version_file = backend_dir / "version.json"
-        self.github_api_url = "https://api.github.com/repos/ggerganov/llama.cpp/releases/latest"
+        self.github_api_url = "https://api.github.com/repos/ggml-org/llama.cpp/releases"
 
     async def fetch_latest_release(self):
+        # The GitHub "latest" release only carries source (no binaries);
+        # prebuilt binaries are published under nightly "bNNNN" tagged releases.
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(self.github_api_url, timeout=10) as response:
+                async with session.get(f"{self.github_api_url}?per_page=20", timeout=10) as response:
                     if response.status != 200:
                         return None, f"GitHub API error: HTTP {response.status}"
-                    data = await response.json()
-                    return data, None
+                    releases = await response.json()
+
+            for release in releases:
+                if re.fullmatch(r"b\d+", release.get("tag_name", "")) and release.get("assets"):
+                    return release, None
+
+            return None, "No nightly build with binary assets found."
         except Exception as e:
             return None, str(e)
 
@@ -67,15 +76,15 @@ class LlamaUpdater(QtCore.QObject):
                     matched_urls.append(asset["browser_download_url"])
 
                 elif backend_type == "cuda":
-                    if matches(name, ["llama", "win", "cuda", "12", "x64"]):
+                    if matches(name, ["llama", "win", "cuda-12", "x64"]):
                         matched_urls.append(asset["browser_download_url"])
-                    elif matches(name, ["cudart", "win", "cuda", "12", "x64"]):
+                    elif matches(name, ["cudart", "win", "cuda-12", "x64"]):
                         matched_urls.append(asset["browser_download_url"])
 
                 elif backend_type == "vulkan" and matches(name, ["llama", "win", "vulkan", "x64"]):
                     matched_urls.append(asset["browser_download_url"])
 
-                elif backend_type == "hip" and matches(name, ["llama", "win", "hip", "radeon", "x64"]):
+                elif backend_type == "hip" and matches(name, ["llama", "win", "rocm", "x64"]):
                     matched_urls.append(asset["browser_download_url"])
 
                 elif backend_type == "sycl" and matches(name, ["llama", "win", "sycl", "x64"]):
@@ -86,14 +95,13 @@ class LlamaUpdater(QtCore.QObject):
                     continue
 
                 if backend_type == "cpu" and matches(
-                    name, ["llama", "ubuntu", "x64"], exclude=["vulkan", "rocm", "sycl", "openvino"]
+                    name, ["llama", "ubuntu", "x64"], exclude=["vulkan", "rocm", "sycl", "openvino", "cuda"]
                 ):
                     matched_urls.append(asset["browser_download_url"])
 
-                elif backend_type == "cuda":
-                    # llama.cpp does not publish prebuilt CUDA binaries for Linux;
-                    # NVIDIA GPU users on Linux currently need to build from source.
-                    continue
+                elif backend_type == "cuda" and matches(name, ["llama", "ubuntu", "cuda-12", "x64"]):
+                    # Matches both llama-*-cuda-12.x and cudart-llama-*-cuda-12.x archives
+                    matched_urls.append(asset["browser_download_url"])
 
                 elif backend_type == "vulkan" and matches(name, ["llama", "ubuntu", "vulkan", "x64"]):
                     matched_urls.append(asset["browser_download_url"])
